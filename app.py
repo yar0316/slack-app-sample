@@ -10,7 +10,8 @@ logger.setLevel(logging.INFO)
 # Slack Boltアプリケーションの初期化
 app = App(
     token=os.environ.get("SLACK_BOT_TOKEN"),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET")
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET"),
+    process_before_response=True
 )
 
 @app.event("app_mention")
@@ -33,19 +34,25 @@ def handle_mention(event, say):
 
     try:
         # メンションされたテキストを抽出
+        logger.info("テキスト抽出")
+        logger.info(str(event))
         text = event['text']
+        logger.info("メンションテキスト: %s", text)
         mention_text = text.split('>')[1].strip()
 
         # オウム返しメッセージを送信
+        logger.info("sayメソッド呼び出し前")
         say(f"あなたが言ったのは: {mention_text}")
-        logger.info("メッセージをオウム返し")
+        logger.info("sayメソッド呼び出し後")
     except IndexError as ie:
         # メンションテキストの抽出に失敗した場合
         say("申し訳ありません。メッセージを正しく解析できませんでした。")
-        logger.error("エラーが発生:%s", str(ie))
+        # logger.info("エラーが発生:%s", str(ie), exc_info=True)
+        logger.info(str(ie))
     except Exception as e:
         # その他の予期せぬエラーが発生した場合
-        logger.error("エラーが発生しました: %s", str(e))
+        # logger.info("エラーが発生しました: %s", str(e), exc_info=True)
+        logger.info(str(e))
         say("申し訳ありません。エラーが発生しました。")
 
 def handler(event, context):
