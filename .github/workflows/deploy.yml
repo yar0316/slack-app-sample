@@ -26,6 +26,7 @@ jobs:
         pip install serverless
         npm install -g serverless
         pip install -r requirements.txt
+        serverless plugin install -n serverless-python-requirements
 
     - name: Deploy
       env:
@@ -34,4 +35,4 @@ jobs:
         SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
         SLACK_SIGNING_SECRET: ${{ secrets.SLACK_SIGNING_SECRET }}
       run: |
-        serverless deploy --stage prod
+        serverless deploy

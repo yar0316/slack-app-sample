@@ -34,16 +34,17 @@ def handle_mention(event, say):
 
     try:
         # メンションされたテキストを抽出
-        logger.info("テキスト抽出")
+        logger.info("テキストほかデータ抽出")
         logger.info(str(event))
         text = event['text']
-        logger.info("メンションテキスト: %s", text)
         mention_text = text.split('>')[1].strip()
+        channel = event['channel']
+        thread_ts = event['ts']
 
+        logger.info("メンションテキスト: %s", text)
+        
         # オウム返しメッセージを送信
-        logger.info("sayメソッド呼び出し前")
-        say(f"あなたが言ったのは: {mention_text}")
-        logger.info("sayメソッド呼び出し後")
+        say(text=f"あなたが言ったのは: {mention_text}", channel=channel, thread_ts=thread_ts)
     except IndexError as ie:
         # メンションテキストの抽出に失敗した場合
         say("申し訳ありません。メッセージを正しく解析できませんでした。")
@@ -70,7 +71,6 @@ def handler(event, context):
         Exception: Slackイベントの処理に失敗した場合
     """
     logger.info("イベント処理を開始")
-    logger.info(str(event))
     try:
         # SlackRequestHandlerを使用してイベントを処理
         slack_handler = SlackRequestHandler(app=app)
