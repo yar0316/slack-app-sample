@@ -1,6 +1,11 @@
 import os
+import logging
 from slack_bolt import App
 from slack_bolt.adapter.aws_lambda import SlackRequestHandler
+
+# ロガーの設定
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # Slack Boltアプリケーションの初期化
 app = App(
@@ -23,6 +28,9 @@ def handle_mention(event, say):
     Raises:
         Exception: メッセージの送信に失敗した場合
     """
+
+    logger.info('メンション時の処理開始')
+
     try:
         # メンションされたテキストを抽出
         text = event['text']
@@ -30,12 +38,14 @@ def handle_mention(event, say):
 
         # オウム返しメッセージを送信
         say(f"あなたが言ったのは: {mention_text}")
-    except IndexError:
+        logger.info("メッセージをオウム返し")
+    except IndexError as ie:
         # メンションテキストの抽出に失敗した場合
         say("申し訳ありません。メッセージを正しく解析できませんでした。")
+        logger.error("エラーが発生:%s", str(ie))
     except Exception as e:
         # その他の予期せぬエラーが発生した場合
-        print(f"エラーが発生しました: {str(e)}")
+        logger.error("エラーが発生しました: %s", str(e))
         say("申し訳ありません。エラーが発生しました。")
 
 def handler(event, context):
@@ -52,6 +62,8 @@ def handler(event, context):
     Raises:
         Exception: Slackイベントの処理に失敗した場合
     """
+    logger.info("イベント処理を開始")
+    logger.info(str(event))
     try:
         # SlackRequestHandlerを使用してイベントを処理
         slack_handler = SlackRequestHandler(app=app)

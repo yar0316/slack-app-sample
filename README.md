@@ -16,8 +16,8 @@
 1. リポジトリをクローンします：
 
    ```bash
-   git clone https://github.com/yourusername/slack-echo-bot.git
-   cd slack-echo-bot
+   git clone https://github.com/yourusername/slack-app-sample.git
+   cd slack-app-sample
    ```
 
 2. 仮想環境を作成し、アクティベートします：
